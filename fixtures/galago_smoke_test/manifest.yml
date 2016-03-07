@@ -1,0 +1,5 @@
+---
+name: galago_smoke_test
+memory: 100M
+disk_quota: 100M
+path: .

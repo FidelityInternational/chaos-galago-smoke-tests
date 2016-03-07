@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"crypto/tls"
 	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -12,6 +13,15 @@ import (
 )
 
 var _ = Describe("Assuming chaos-galago is deployed", func() {
+	var client *http.Client
+
+	BeforeEach(func() {
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		client = &http.Client{Transport: tr}
+	})
+
 	Describe("service instances", func() {
 		Context("when the service instance exists", func() {
 			var (
@@ -40,7 +50,7 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 			})
 
 			It("updates a service instance", func() {
-				resp, _ := http.PostForm(dashboardURL, url.Values{"probability": {"1"}, "frequency": {"1"}})
+				resp, _ := client.PostForm(dashboardURL, url.Values{"probability": {"1"}, "frequency": {"1"}})
 				defer resp.Body.Close()
 				body, _ := ioutil.ReadAll(resp.Body)
 				Expect(string(body)).To(MatchRegexp("Probability: 1"))
@@ -137,7 +147,7 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 					freakOutDebug(output, err)
 					firstSplit := strings.SplitAfter(string(output), "Dashboard: ")[1]
 					dashboardURL = strings.TrimSpace(strings.SplitAfter(firstSplit, "\n")[0])
-					http.PostForm(dashboardURL, url.Values{"probability": {"1"}, "frequency": {"1"}})
+					client.PostForm(dashboardURL, url.Values{"probability": {"1"}, "frequency": {"1"}})
 					exec.Command("cf", "start", appName).Run()
 					exec.Command("cf", "target", "-o", "chaos-galago", "-s", "chaos-galago").Run()
 				})

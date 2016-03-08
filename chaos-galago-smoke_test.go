@@ -30,15 +30,17 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 			)
 
 			BeforeEach(func() {
-				exec.Command("cf", "create-service", "chaos-galago", "default", serviceInstanceName).Run()
-				output, err := exec.Command("cf", "service", serviceInstanceName).Output()
+				output, err := exec.Command("cf", "create-service", "chaos-galago", "default", serviceInstanceName).Output()
+				freakOutDebug(output, err)
+				output, err = exec.Command("cf", "service", serviceInstanceName).Output()
 				freakOutDebug(output, err)
 				firstSplit := strings.SplitAfter(string(output), "Dashboard: ")[1]
 				dashboardURL = strings.TrimSpace(strings.SplitAfter(firstSplit, "\n")[0])
 			})
 
 			AfterEach(func() {
-				exec.Command("cf", "delete-service", "-f", serviceInstanceName).Run()
+				output, err := exec.Command("cf", "delete-service", "-f", serviceInstanceName).Output()
+				freakOutDebug(output, err)
 			})
 
 			It("creates a service instance", func() {
@@ -70,7 +72,8 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 			var serviceInstanceName = "galago_smoke_test"
 
 			AfterEach(func() {
-				exec.Command("cf", "delete-service", "-f", serviceInstanceName).Run()
+				output, err := exec.Command("cf", "delete-service", "-f", serviceInstanceName).Output()
+				freakOutDebug(output, err)
 			})
 
 			It("creates a service instance", func() {
@@ -93,24 +96,25 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 	})
 
 	Describe("service bindings", func() {
-		var (
-			serviceInstanceName = "galago_smoke_test"
-			appName             = "galago_smoke_test"
-		)
-
 		BeforeEach(func() {
-			exec.Command("cf", "create-service", "chaos-galago", "default", serviceInstanceName).Run()
-			exec.Command("cf", "push", "-f", "fixtures/galago_smoke_test/manifest.yml", "--no-start").Run()
+			output, err := exec.Command("cf", "create-service", "chaos-galago", "default", serviceInstanceName).Output()
+			freakOutDebug(output, err)
 		})
 
 		AfterEach(func() {
-			exec.Command("cf", "delete", "-f", appName).Run()
-			exec.Command("cf", "delete-service", "-f", serviceInstanceName).Run()
+			output, err := exec.Command("cf", "delete-service", "-f", serviceInstanceName).Output()
+			freakOutDebug(output, err)
 		})
 
 		Context("when an app is bound", func() {
 			BeforeEach(func() {
-				exec.Command("cf", "bind-service", appName, serviceInstanceName).Run()
+				output, err := exec.Command("cf", "bind-service", appName, serviceInstanceName).Output()
+				freakOutDebug(output, err)
+			})
+
+			AfterEach(func() {
+				output, err := exec.Command("cf", "unbind-service", appName, serviceInstanceName).Output()
+				freakOutDebug(output, err)
 			})
 
 			It("bind a service instance", func() {
@@ -148,12 +152,12 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 					firstSplit := strings.SplitAfter(string(output), "Dashboard: ")[1]
 					dashboardURL = strings.TrimSpace(strings.SplitAfter(firstSplit, "\n")[0])
 					client.PostForm(dashboardURL, url.Values{"probability": {"1"}, "frequency": {"1"}})
-					exec.Command("cf", "start", appName).Run()
 					exec.Command("cf", "target", "-o", "chaos-galago", "-s", "chaos-galago").Run()
 				})
 
 				AfterEach(func() {
-					exec.Command("cf", "target", "-o", orgName, "-s", spaceName).Run()
+					output, err := exec.Command("cf", "target", "-o", orgName, "-s", spaceName).Output()
+					freakOutDebug(output, err)
 				})
 
 				It("acts on bound aplications", func() {
@@ -174,6 +178,11 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 		})
 
 		Context("when an app is not bound", func() {
+			AfterEach(func() {
+				output, err := exec.Command("cf", "unbind-service", appName, serviceInstanceName).Output()
+				freakOutDebug(output, err)
+			})
+
 			It("bind a service instance", func() {
 				output, _ := exec.Command("cf", "bind-service", appName, serviceInstanceName).Output()
 				Expect(string(output)).To(MatchRegexp("OK"))

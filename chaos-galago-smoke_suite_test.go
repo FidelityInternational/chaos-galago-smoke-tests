@@ -17,11 +17,13 @@ func TestUtils(t *testing.T) {
 }
 
 var (
-	cfHome    string
-	err       error
-	orgName   = "chaos-galago-smoke"
-	spaceName = orgName
-	output    []byte
+	cfHome              string
+	err                 error
+	orgName             = "chaos-galago-smoke"
+	spaceName           = orgName
+	output              []byte
+	serviceInstanceName = "galago_smoke_test"
+	appName             = "galago_smoke_test"
 )
 
 func doSetup() {
@@ -49,9 +51,13 @@ func doSetup() {
 	freakOutDebug(output, err)
 	output, err = exec.Command("cf", "target", "-s", spaceName).Output()
 	freakOutDebug(output, err)
+	output, err = exec.Command("cf", "push", "-f", "fixtures/galago_smoke_test/manifest.yml").Output()
+	freakOutDebug(output, err)
 }
 
 func doTeardown() {
+	output, err = exec.Command("cf", "delete", "-f", appName).Output()
+	freakOutDebug(output, err)
 	output, err = exec.Command("cf", "delete-space", "-f", spaceName).Output()
 	freakOutDebug(output, err)
 	output, err = exec.Command("cf", "delete-org", "-f", orgName).Output()

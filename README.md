@@ -1,5 +1,7 @@
 # chaos-galago-smoke-tests
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/FidelityInternational/chaos-galago-smoke-tests)](https://goreportcard.com/report/github.com/FidelityInternational/chaos-galago-smoke-tests)
+
 ### Overview
 
 `chaos-galago-smoke-tests` is a project to enable smoke tests for `https://github.com/FidelityInternational/chaos-galago`.

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/satori/go.uuid"
 	"os"
 	"os/exec"
 	"testing"
@@ -19,11 +20,12 @@ func TestUtils(t *testing.T) {
 var (
 	cfHome              string
 	err                 error
-	orgName             = "chaos-galago-smoke"
+	guid                = uuid.NewV4()
+	orgName             = fmt.Sprintf("chaos-galago-smoke-%s", guid)
 	spaceName           = orgName
 	output              []byte
-	serviceInstanceName = "galago_smoke_test"
-	appName             = "galago_smoke_test"
+	serviceInstanceName = fmt.Sprintf("galago_smoke_test_%s", guid)
+	appName             = fmt.Sprintf("galago_smoke_test_%s", guid)
 )
 
 func doSetup() {

@@ -25,8 +25,7 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 	Describe("service instances", func() {
 		Context("when the service instance exists", func() {
 			var (
-				serviceInstanceName = "galago_smoke_test"
-				dashboardURL        string
+				dashboardURL string
 			)
 
 			BeforeEach(func() {
@@ -69,8 +68,6 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 		})
 
 		Context("When the service instance does not exist", func() {
-			var serviceInstanceName = "galago_smoke_test"
-
 			AfterEach(func() {
 				output, err := exec.Command("cf", "delete-service", "-f", serviceInstanceName).Output()
 				freakOutDebug(output, err)

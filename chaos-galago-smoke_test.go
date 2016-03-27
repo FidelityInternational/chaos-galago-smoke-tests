@@ -161,7 +161,7 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 					Eventually(func() string {
 						output, _ := exec.Command("cf", "curl", fmt.Sprintf("v2/apps/%s/instances", appGUID)).Output()
 						return string(output)
-					}, "50s", "1s").Should(MatchRegexp(`"state": "RUNNING"`))
+					}, "120s", "1s").Should(MatchRegexp(`"state": "RUNNING"`))
 					Eventually(func() string {
 						output, _ := exec.Command("cf", "logs", "chaos-galago-processor", "--recent").Output()
 						return string(output)
@@ -169,7 +169,7 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 					Eventually(func() string {
 						output, _ := exec.Command("cf", "curl", fmt.Sprintf("v2/apps/%s/instances", appGUID)).Output()
 						return string(output)
-					}, "30s", "1s").Should(MatchRegexp(`"state": "DOWN"`))
+					}, "120s", "1s").Should(MatchRegexp(`"state": "DOWN"`))
 				})
 			})
 		})

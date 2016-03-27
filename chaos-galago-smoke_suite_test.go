@@ -24,8 +24,8 @@ var (
 	orgName             = fmt.Sprintf("chaos-galago-smoke-%s", guid)
 	spaceName           = orgName
 	output              []byte
-	serviceInstanceName = fmt.Sprintf("galago_smoke_test_%s", guid)
-	appName             = fmt.Sprintf("galago_smoke_test_%s", guid)
+	serviceInstanceName = fmt.Sprintf("test_%s", guid)
+	appName             = fmt.Sprintf("test_%s", guid)
 )
 
 func doSetup() {

@@ -53,7 +53,7 @@ func doSetup() {
 	freakOutDebug(output, err)
 	output, err = exec.Command("cf", "target", "-s", spaceName).Output()
 	freakOutDebug(output, err)
-	output, err = exec.Command("cf", "push", "-f", "fixtures/galago_smoke_test/manifest.yml").Output()
+	output, err = exec.Command("cf", "push", appName, "-f", "fixtures/galago_smoke_test/manifest.yml").Output()
 	freakOutDebug(output, err)
 }
 

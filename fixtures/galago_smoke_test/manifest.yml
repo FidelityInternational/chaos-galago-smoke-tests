@@ -1,4 +1,4 @@
 ---
 memory: 100M
-disk_quota: 100M
+disk_quota: 250M
 path: .

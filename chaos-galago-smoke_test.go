@@ -175,6 +175,11 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 		})
 
 		Context("when an app is not bound", func() {
+			BeforeEach(func() {
+				output, err := exec.Command("cf", "unbind-service", appName, serviceInstanceName).Output()
+				freakOutDebug(output, err)
+			})
+
 			AfterEach(func() {
 				output, err := exec.Command("cf", "unbind-service", appName, serviceInstanceName).Output()
 				freakOutDebug(output, err)
@@ -193,7 +198,6 @@ var _ = Describe("Assuming chaos-galago is deployed", func() {
 			It("unbind a service instance", func() {
 				output, _ := exec.Command("cf", "unbind-service", appName, serviceInstanceName).Output()
 				Expect(string(output)).To(MatchRegexp("OK"))
-				Expect(string(output)).To(MatchRegexp("did not exist"))
 				output, _ = exec.Command("cf", "env", appName).Output()
 				Expect(string(output)).ToNot(MatchRegexp(`label": "chaos-galago"`))
 				Expect(string(output)).ToNot(MatchRegexp(`frequency": 5`))
